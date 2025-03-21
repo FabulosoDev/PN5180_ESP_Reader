@@ -207,7 +207,7 @@ void WebServer::handleDeleteCard(AsyncWebServerRequest* request, JsonVariant& js
 void WebServer::handleSettingsGet(AsyncWebServerRequest* request) {
     StaticJsonDocument<400> doc;
     
-    if (_config.hasCredentials()) {
+    if (_config.hasWifiParameters()) {
         doc["ssid"] = _config.getSsid();
         doc["password"] = _config.getPassword();
     } else {
@@ -215,7 +215,7 @@ void WebServer::handleSettingsGet(AsyncWebServerRequest* request) {
         doc["password"] = "";
     }
 
-    if (_config.hasDiscordConfig()) {
+    if (_config.hasDiscordParameters()) {
         doc["channel_id"] = _config.getChannelId();
         doc["token"] = _config.getToken();
     } else {
