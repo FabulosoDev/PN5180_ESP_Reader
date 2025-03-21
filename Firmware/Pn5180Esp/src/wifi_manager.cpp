@@ -12,11 +12,11 @@ void WiFiManager::begin() {
         return;
     }
     
-    if (_config.hasCredentials()) {
-        Serial.println(F("Found stored credentials"));
+    if (_config.hasWifiParameters()) {
+        Serial.println(F("Found stored WiFi parameters"));
         connectToWiFi(_config.getSsid(), _config.getPassword());
     } else {
-        Serial.println(F("No credentials found, starting AP"));
+        Serial.println(F("No WiFi parameters found, starting AP"));
         setupAccessPoint();
     }
 }

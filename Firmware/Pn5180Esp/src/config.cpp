@@ -3,6 +3,8 @@
 Config::Config(const char* filename) : _filename(filename) {
     _ssid[0] = '\0';
     _password[0] = '\0';
+    _channelId[0] = '\0';
+    _token[0] = '\0';
     SPIFFS.begin();
 }
 
@@ -32,6 +34,8 @@ bool Config::load() {
     
     strlcpy(_ssid, json["ssid"] | "", MAX_SSID_LENGTH + 1);
     strlcpy(_password, json["password"] | "", MAX_PASSWORD_LENGTH + 1);
+    strlcpy(_channelId, json["channel_id"] | "", MAX_CHANNEL_ID_LENGTH + 1);
+    strlcpy(_token, json["token"] | "", MAX_TOKEN_LENGTH + 1);
     
     return true;
 }
@@ -42,6 +46,8 @@ bool Config::save() {
     
     doc["ssid"] = _ssid;
     doc["password"] = _password;
+    doc["channel_id"] = _channelId;
+    doc["token"] = _token;
     
     if (!openFile(file, "w")) {
         return false;
@@ -56,6 +62,11 @@ bool Config::save() {
 void Config::setCredentials(const char* ssid, const char* password) {
     strlcpy(_ssid, ssid, MAX_SSID_LENGTH + 1);
     strlcpy(_password, password, MAX_PASSWORD_LENGTH + 1);
+}
+
+void Config::setDiscordConfig(const char* channelId, const char* token) {
+    strlcpy(_channelId, channelId, MAX_CHANNEL_ID_LENGTH + 1);
+    strlcpy(_token, token, MAX_TOKEN_LENGTH + 1);
 }
 
 bool Config::openFile(File& file, const char* mode) const {
