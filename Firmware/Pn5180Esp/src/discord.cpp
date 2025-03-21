@@ -10,7 +10,17 @@ String Discord::getWebhookUrl() const {
     return "https://discordapp.com/api/webhooks/" + channelId + "/" + token;
 }
 
+bool Discord::isConfigValid() const {
+    return channelId.length() > 0 && channelId[0] != '\0' && 
+           token.length() > 0 && token[0] != '\0';
+}
+
 bool Discord::sendMessage(const String& message) {
+    if (!isConfigValid()) {
+        Serial.println("Discord config missing - message not sent");
+        return false;
+    }
+
     WiFiClientSecure *client = new WiFiClientSecure;
 
     if (client)
@@ -45,6 +55,11 @@ bool Discord::sendMessage(const String& message) {
 }
 
 bool Discord::sendTextFile(const String& filename, const String& content) {
+    if (!isConfigValid()) {
+        Serial.println("Discord config missing - file not sent");
+        return false;
+    }
+
     WiFiClientSecure *client = new WiFiClientSecure;
 
     if (client)

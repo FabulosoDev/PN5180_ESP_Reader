@@ -16,6 +16,7 @@ public:
     void setDiscordConfig(const char* channelId, const char* token);
     
     bool hasCredentials() const { return _ssid[0] != '\0' && _password[0] != '\0'; }
+    bool hasDiscordConfig() const { return _channelId[0] != '\0' && _token[0] != '\0'; }
     const char* getSsid() const { return _ssid; }
     const char* getPassword() const { return _password; }
     const char* getChannelId() const { return _channelId; }

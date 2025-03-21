@@ -7,7 +7,8 @@ $(function() {
     const events = {
         'settings_success': 'success',
         'settings_warning': 'warning',
-        'settings_error': 'danger'
+        'settings_error': 'danger',
+        'restart': 'info'
     };        
     eventHandler.setupEventSource(events);
 

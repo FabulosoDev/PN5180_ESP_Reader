@@ -56,6 +56,10 @@ void WebServer::setupApiEndpoints() {
             handleSettingsPost(request, json);
         }
     ));
+
+    _server.on(RESTART_PATH, HTTP_GET, [this](AsyncWebServerRequest* request) {
+        handleRestart(request);
+    });
 }
 
 void WebServer::handleReadCard(AsyncWebServerRequest* request) {
@@ -201,7 +205,7 @@ void WebServer::handleDeleteCard(AsyncWebServerRequest* request, JsonVariant& js
 }
 
 void WebServer::handleSettingsGet(AsyncWebServerRequest* request) {
-    StaticJsonDocument<200> doc;
+    StaticJsonDocument<400> doc;
     
     if (_config.hasCredentials()) {
         doc["ssid"] = _config.getSsid();
@@ -209,6 +213,14 @@ void WebServer::handleSettingsGet(AsyncWebServerRequest* request) {
     } else {
         doc["ssid"] = "";
         doc["password"] = "";
+    }
+
+    if (_config.hasDiscordConfig()) {
+        doc["channel_id"] = _config.getChannelId();
+        doc["token"] = _config.getToken();
+    } else {
+        doc["channel_id"] = "";
+        doc["token"] = "";
     }
     
     String response;
@@ -220,6 +232,8 @@ void WebServer::handleSettingsPost(AsyncWebServerRequest* request, JsonVariant& 
     JsonObject settings = json.as<JsonObject>();
     const char* ssid = settings["ssid"];
     const char* password = settings["password"];
+    const char* channelId = settings["channel_id"];
+    const char* token = settings["token"];
 
     if (!ssid || !password || strlen(ssid) == 0 || strlen(password) == 0) {
         _events.send("SSID and Password must not be empty!", "settings_warning", millis());
@@ -228,11 +242,10 @@ void WebServer::handleSettingsPost(AsyncWebServerRequest* request, JsonVariant& 
     }
 
     _config.setCredentials(ssid, password);
+    _config.setDiscordConfig(channelId, token);
+    
     if (_config.save()) {
-        request->onDisconnect([]() {
-            ESP.restart();
-        });
-        _events.send("Settings saved successfully. Restarting...", "settings_success", millis());
+        _events.send("Settings saved successfully.", "settings_success", millis());
         request->send(200);
     } else {
         _events.send("Failed to save settings!", "settings_error", millis());
@@ -249,4 +262,15 @@ void WebServer::setupEventSource() {
     });
 
     _server.addHandler(&_events);
+}
+
+void WebServer::handleRestart(AsyncWebServerRequest* request) {
+    Serial.println(F("Handling restart request..."));
+    
+    request->onDisconnect([]() {
+        ESP.restart();
+    });
+    
+    _events.send("Restarting...", "restart", millis());
+    request->send(200);
 }

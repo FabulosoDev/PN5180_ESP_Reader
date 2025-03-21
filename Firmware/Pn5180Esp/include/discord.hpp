@@ -12,8 +12,9 @@ class Discord {
 private:
     String channelId;
     String token;
-    String getWebhookUrl() const;
     Config& config;
+    String getWebhookUrl() const;
+    bool isConfigValid() const;
 
 public:
     Discord(Config& config);
