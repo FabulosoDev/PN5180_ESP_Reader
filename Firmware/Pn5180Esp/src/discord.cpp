@@ -15,45 +15,6 @@ bool Discord::isConfigValid() const {
     return channelId[0] != '\0' && token[0] != '\0';
 }
 
-bool Discord::sendMessage(const String& message) {
-    if (!isConfigValid()) {
-        Serial.println("Discord config missing - message not sent");
-        return false;
-    }
-
-    WiFiClientSecure *client = new WiFiClientSecure;
-
-    if (client)
-    {
-        client->setInsecure();
-        HTTPClient https;
-
-        if (https.begin(*client, getWebhookUrl())) {
-            https.addHeader("Content-Type", "application/json");
-        
-            String payload = "{\"content\":\"" + message + "\"}";
-            int httpCode = https.POST(payload);  
-            https.end();
-
-            delete client;
-
-            bool success = httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_NO_CONTENT;
-
-            if (success) {
-                Serial.println("Message sent to Discord successfully");
-            } else {
-                Serial.println("Failed to send message to Discord");
-            }
-
-            return success;
-        }
-    }
-
-    Serial.println("Failed to send message to Discord");
-
-    return false;
-}
-
 bool Discord::sendTextFile(const String& filename, const String& content) {
     if (!isConfigValid()) {
         Serial.println("Discord config missing - file not sent");

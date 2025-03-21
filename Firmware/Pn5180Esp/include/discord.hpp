@@ -11,7 +11,6 @@
 class Discord {
 public:
     Discord(Config& config);
-    bool sendMessage(const String& message);
     bool sendTextFile(const String& filename, const String& content);
 
 private:
