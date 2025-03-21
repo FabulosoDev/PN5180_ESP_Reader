@@ -28,6 +28,26 @@ $(function() {
         $icon.toggleClass('fa-eye fa-eye-slash');
     });
 
+    $('#toggleToken').on('click', e => {
+        e.preventDefault();
+        const $input = $('#inputToken');
+        const $icon = $('#toggleTokenIcon');
+        const isPassword = $input.attr('type') === 'password';
+        
+        $input.attr('type', isPassword ? 'text' : 'password');
+        $icon.toggleClass('fa-eye fa-eye-slash');
+    });
+
+    $('#btnRestart').on('click', () => {
+        const $button = $('#btnRestart').prop('disabled', true);
+        
+        $.ajax({
+            type: 'GET',
+            url: '/restart'
+        })
+        .always(() => $button.prop('disabled', false));
+    });
+
     $('#formSettings').on('submit', e => {
         e.preventDefault();
         const $form = $(e.target);

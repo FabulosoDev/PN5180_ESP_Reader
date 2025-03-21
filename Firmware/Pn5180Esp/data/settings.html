@@ -27,11 +27,13 @@
     <main class="container pt-3">
       <div class="jumbotron">
         <form id="formSettings">
+
+          <h5 class="mb-3">WiFi</h5>
           <div class="form-floating mb-3">
             <input type="text" class="form-control" id="inputSsid" name="ssid" placeholder="SSID">
             <label for="inputSsid">SSID</label>
           </div>
-          <div class="input-group mb-3">
+          <div class="input-group mb-4">
             <div class="form-floating">
               <input type="password" class="form-control" id="inputPassword" name="password" placeholder="Password">
               <label for="inputPassword">Password</label>
@@ -40,7 +42,26 @@
               <i class="fa-solid fa-fw fa-eye" id="togglePasswordIcon"></i>
             </span>
           </div>
-          <button type="submit" class="btn btn-dark" id="btnSubmit">Save & Restart</button>
+
+          <h5 class="mb-3">Discord</h5>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="inputChannelId" name="channel_id" placeholder="Channel ID">
+            <label for="inputChannelId">Channel ID</label>
+          </div>
+          <div class="input-group mb-4">
+            <div class="form-floating">
+              <input type="password" class="form-control" id="inputToken" name="token" placeholder="Token">
+              <label for="inputToken">Token</label>
+            </div>
+            <span class="input-group-text" id="toggleToken" role="button">
+              <i class="fa-solid fa-fw fa-eye" id="toggleTokenIcon"></i>
+            </span>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-dark" id="btnSubmit">Save</button>
+            <button type="button" class="btn btn-outline-dark" id="btnRestart">Restart</button>
+          </div>
         </form>
       </div>
     </main>
