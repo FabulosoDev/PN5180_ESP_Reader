@@ -18,6 +18,8 @@ WebServer webServer(config, pn15693);
 CardStorage cardStorage(pn15693);
 Discord discord(config);
 
+uint8_t lastSentUid[PN15693::UID_SIZE] = {0};
+
 void setup() {
     Serial.begin(115200);
     Serial.println(F("Booting..."));
@@ -63,8 +65,16 @@ void loop() {
                     break;
             }
 
-            FlipperNfc flipper(pn15693);
-            discord.sendTextFile(flipper.getFilename() + ".nfc", flipper.create());
+            if (memcmp(pn15693.getUid(), lastSentUid, PN15693::UID_SIZE) != 0) {
+                Serial.println(F("New card detected - sending to Discord..."));
+                
+                FlipperNfc flipper(pn15693);
+                if (discord.sendTextFile(flipper.getFilename() + ".nfc", flipper.create())) {
+                    memcpy(lastSentUid, pn15693.getUid(), PN15693::UID_SIZE);
+                }
+            } else {
+                Serial.println(F("Card previously sent to Discord, skipping"));
+            }
 
             delay(2000);
         }
