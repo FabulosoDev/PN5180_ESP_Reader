@@ -12,7 +12,7 @@ public:
     void feedback(int r, int g, int b, int delayMs);
 
 private:
-    Adafruit_NeoPixel pixels;
+    Adafruit_NeoPixel _pixels;
 };
 
 #endif // NEOPIXEL_HPP

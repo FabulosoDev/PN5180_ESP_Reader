@@ -1,18 +1,18 @@
 #include "../include/discord.hpp"
 
-Discord::Discord(Config& config) 
-    : config(config), 
-      channelId(config.getChannelId()),
-      token(config.getToken()) {
+Discord::Discord(Config& config) : _config(config) {
 }
 
 String Discord::getWebhookUrl() const {
-    return "https://discordapp.com/api/webhooks/" + channelId + "/" + token;
+    return "https://discordapp.com/api/webhooks/" + 
+           String(_config.getChannelId()) + "/" + 
+           String(_config.getToken());
 }
 
 bool Discord::isConfigValid() const {
-    return channelId.length() > 0 && channelId[0] != '\0' && 
-           token.length() > 0 && token[0] != '\0';
+    const char* channelId = _config.getChannelId();
+    const char* token = _config.getToken();
+    return channelId[0] != '\0' && token[0] != '\0';
 }
 
 bool Discord::sendMessage(const String& message) {

@@ -1,7 +1,7 @@
 #include "../include/flipper_nfc.hpp"
 
 FlipperNfc::FlipperNfc(const PN15693& pn15693) 
-    : uid(pn15693.getUid()), data(pn15693.getData()) {
+    : _uid(pn15693.getUid()), _data(pn15693.getData()) {
 }
 
 String FlipperNfc::bytesToHexString(const uint8_t* bytes, size_t length, bool reverse) const {
@@ -27,8 +27,8 @@ String FlipperNfc::bytesToHexString(const uint8_t* bytes, size_t length, bool re
 }
 
 String FlipperNfc::create() const {
-    String formattedUid = bytesToHexString(uid, PN15693::UID_SIZE, true);
-    String formattedData = bytesToHexString(data, PN15693::DATA_SIZE);
+    String formattedUid = bytesToHexString(_uid, PN15693::UID_SIZE, true);
+    String formattedData = bytesToHexString(_data, PN15693::DATA_SIZE);
     
     return String(F("Filetype: Flipper NFC device\n"
         "Version: 4\n"
@@ -70,7 +70,7 @@ String FlipperNfc::getFilename() const {
 
     for (size_t i = 0; i < 4; i++) {
         char hex[3];
-        sprintf(hex, "%02X", uid[i]);
+        sprintf(hex, "%02X", _uid[i]);
         hexString += hex;
     }
     return hexString;
