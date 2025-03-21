@@ -1,7 +1,9 @@
 #include "../include/discord.hpp"
 
-Discord::Discord(const String& channelId, const String& token) 
-    : channelId(channelId), token(token) {
+Discord::Discord(Config& config) 
+    : config(config), 
+      channelId(config.getChannelId()),
+      token(config.getToken()) {
 }
 
 String Discord::getWebhookUrl() const {

@@ -16,7 +16,7 @@ Config config("/config.json");
 WiFiManager wifiManager(config);
 WebServer webServer(config, pn15693);
 CardStorage cardStorage(pn15693);
-Discord discord("", "");
+Discord discord(config);
 
 void setup() {
     Serial.begin(115200);
@@ -64,10 +64,7 @@ void loop() {
             }
 
             FlipperNfc flipper(pn15693);
-            String content = flipper.create();
-            String filename = flipper.getFilename() + ".nfc";
-            
-            discord.sendTextFile(filename, content);
+            discord.sendTextFile(flipper.getFilename() + ".nfc", flipper.create());
 
             delay(2000);
         }
