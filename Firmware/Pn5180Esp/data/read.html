@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PN5180 ESP</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="icon-128x128.png">
+    
+    <!-- CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/fontawesome.min.css" rel="stylesheet">
+    <link href="css/styles.min.css" rel="stylesheet">
+    
+    <!-- JavaScript Libraries (non-module) -->
+    <script src="js/Bs5Utils.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jszip.min.js"></script>
+
+    <!-- Module Scripts -->
+    <script src="js/read.js" type="module"></script>
+  </head>
+  <body>
+    <div id="common-navbar"></div>
+    <main class="container pt-3">
+      <div class="jumbotron">
+        <div class="row mb-3">
+          <div class="col-sm-2">UID:</div>
+          <div class="col-sm-10"><code id="cardUid">-</code></div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-sm-2">Data:</div>
+          <div class="col-sm-10"><code id="cardData" style="word-break: break-all">-</code></div>
+        </div>
+        <button type="button" class="btn btn-primary me-2" id="btnRead">Read</button>
+        <button type="button" class="btn btn-success" id="btnDownload">Download</button>
+      </div>
+    </main>
+    <div class="modal fade" id="zipNameModal" tabindex="-1" aria-labelledby="zipNameModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="zipNameModalLabel">Enter Zip Name</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <input type="text" class="form-control" id="zipNameInput">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="confirmZipName">Download</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
