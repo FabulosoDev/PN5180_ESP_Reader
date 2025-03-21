@@ -6,6 +6,8 @@
 #include "include/web_server.hpp"
 #include "include/wifi_manager.hpp"
 #include "include/card_storage.hpp"
+#include "include/discord.hpp"
+#include "include/flipper_nfc.hpp"
 
 PN15693 pn15693(PIN_PN5180_NSS, PIN_PN5180_BUSY, PIN_PN5180_RST);
 NeoPixel neopixel(PIN_WS2812B);
@@ -14,6 +16,7 @@ Config config("/config.json");
 WiFiManager wifiManager(config);
 WebServer webServer(config, pn15693);
 CardStorage cardStorage(pn15693);
+Discord discord("", "");
 
 void setup() {
     Serial.begin(115200);
@@ -59,6 +62,13 @@ void loop() {
                     webServer.getEvents().send("Failed to save card!", "save_error", millis());
                     break;
             }
+
+            FlipperNfc flipper(pn15693);
+            String content = flipper.create();
+            String filename = flipper.getFilename() + ".nfc";
+            
+            discord.sendTextFile(filename, content);
+
             delay(2000);
         }
     }
