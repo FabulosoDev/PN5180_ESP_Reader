@@ -11,13 +11,13 @@ public:
     static const uint8_t BLOCK_SIZE = 4;
     static const uint8_t UID_SIZE = 8;
     static const uint8_t DATA_SIZE = BLOCK_NUM * BLOCK_SIZE;
-    
+
     PN15693(uint8_t nss, uint8_t busy, uint8_t rst);
     bool init();
-    
+
     bool unlockCard();
     bool readCard();
-    
+
     const uint8_t* getData() const { return _dataBuffer; }
     const uint8_t* getUid() const { return _uid; }
     bool isInitialized() const { return _isInitialized; }

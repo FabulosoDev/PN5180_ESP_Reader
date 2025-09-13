@@ -2,7 +2,7 @@
 #include "../include/pn15693.hpp"
 #include "../include/passwords.hpp"
 
-PN15693::PN15693(uint8_t nss, uint8_t busy, uint8_t rst) 
+PN15693::PN15693(uint8_t nss, uint8_t busy, uint8_t rst)
     : _nfc15693(nss, busy, rst)
     , _isInitialized(false) {
 }
@@ -11,7 +11,7 @@ bool PN15693::init() {
     uint8_t productVersion[2] = {255, 255};
     uint8_t firmwareVersion[2] = {255, 255};
     uint8_t eepromVersion[2] = {255, 255};
-    
+
     _nfc15693.begin();
 
     Serial.println(F("----------------------------------"));
@@ -33,7 +33,7 @@ bool PN15693::init() {
         _isInitialized = false;
         return false;
     }
-    
+
     Serial.println(F("----------------------------------"));
     Serial.println(F("Reading firmware version..."));
     _nfc15693.readEEprom(FIRMWARE_VERSION, firmwareVersion, sizeof(firmwareVersion));
@@ -61,7 +61,7 @@ bool PN15693::init() {
 //void PN15693::detectCardLoop() {
 //    Serial.println(F("----------------------------------"));
 //    Serial.print(F("Waiting for card"));
-//    
+//
 //    uint8_t dotCount = 0;
 //    while (true) {
 //        uint32_t irqStatus = _nfc15693.getIRQStatus();
@@ -102,7 +102,7 @@ bool PN15693::init() {
 //
 //        _nfc15693.reset();
 //        _nfc15693.setupRF();
-//        
+//
 //        delay(DETECT_CARD_INTERVAL_MS);
 //    }
 //}
