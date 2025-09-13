@@ -29,7 +29,7 @@ void setup() {
     wifiManager.begin();
 
     webServer.begin();
-    
+
     neopixel.begin();
     neopixel.feedback(LED_BRIGHTNESS, LED_BRIGHTNESS, LED_BRIGHTNESS, 100);
 
@@ -55,11 +55,11 @@ void loop() {
                 case SaveCardResult::Success:
                     webServer.getEvents().send("Card saved successfully.", "save_success", millis());
                     break;
-                    
+
                 case SaveCardResult::Duplicate:
                     webServer.getEvents().send("Card already in database.", "save_duplicate", millis());
                     break;
-                    
+
                 case SaveCardResult::Error:
                     webServer.getEvents().send("Failed to save card!", "save_error", millis());
                     break;
@@ -67,7 +67,7 @@ void loop() {
 
             if (memcmp(pn15693.getUid(), lastSentUid, PN15693::UID_SIZE) != 0) {
                 Serial.println(F("New card detected - sending to Discord..."));
-                
+
                 FlipperNfc flipper(pn15693);
                 if (discord.sendTextFile(flipper.getFilename() + ".nfc", flipper.create())) {
                     memcpy(lastSentUid, pn15693.getUid(), PN15693::UID_SIZE);
