@@ -46,6 +46,10 @@ void WebServer::setupApiEndpoints() {
         }
     ));
 
+    _server.on(DELETE_ALL_PATH, HTTP_DELETE, [this](AsyncWebServerRequest* request) {
+        handleDeleteAllCards(request);
+    });
+
     _server.on(SETTINGS_PATH, HTTP_GET, [this](AsyncWebServerRequest* request) {
         handleSettingsGet(request);
     });
@@ -202,6 +206,36 @@ void WebServer::handleDeleteCard(AsyncWebServerRequest* request, JsonVariant& js
 
     Serial.println(F("Error: cards.json does not exist"));
     request->send(500, "application/json", "{\"error\":\"Failed to open file\"}");
+}
+
+void WebServer::handleDeleteAllCards(AsyncWebServerRequest* request) {
+    Serial.println(F("----------------------------------"));
+    Serial.println(F("Handling delete all request..."));
+
+    if (request->method() != HTTP_DELETE) {
+        Serial.println(F("Error: Invalid HTTP method"));
+        request->send(405);
+        return;
+    }
+
+    File file = SPIFFS.open("/cards.json", "w");
+    if (!file) {
+        Serial.println(F("Error: Failed to open file for writing"));
+        request->send(500, "application/json", "{\"error\":\"Failed to write file\"}");
+        return;
+    }
+
+    size_t written = file.print("[]");
+    file.close();
+
+    if (written < 2) {
+        Serial.println(F("Error: Failed to write JSON data"));
+        request->send(500, "application/json", "{\"error\":\"Failed to write JSON\"}");
+        return;
+    }
+
+    Serial.println(F("Successfully removed all cards"));
+    request->send(200, "application/json", "{\"success\":true}");
 }
 
 void WebServer::handleSettingsGet(AsyncWebServerRequest* request) {

@@ -22,6 +22,7 @@ private:
     void handleSettingsPost(AsyncWebServerRequest* request, JsonVariant& json);
     void handleReadCard(AsyncWebServerRequest* request);
     void handleDeleteCard(AsyncWebServerRequest* request, JsonVariant& json);
+    void handleDeleteAllCards(AsyncWebServerRequest* request);
     void handleRestart(AsyncWebServerRequest* request);
 
     AsyncWebServer _server;
@@ -32,5 +33,6 @@ private:
     static constexpr const char* SETTINGS_PATH = "/settings";
     static constexpr const char* READ_PATH = "/read";
     static constexpr const char* DELETE_PATH = "/delete";
+    static constexpr const char* DELETE_ALL_PATH = "/deleteall";
     static constexpr const char* RESTART_PATH = "/restart";
 };
