@@ -3,6 +3,7 @@
 #ifndef PN15693_HPP
 #define PN15693_HPP
 
+#include <Arduino.h>
 #include <PN5180ISO15693.h>
 
 class PN15693 {

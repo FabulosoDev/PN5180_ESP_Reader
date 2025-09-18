@@ -24,7 +24,11 @@ void setup() {
     Serial.begin(115200);
     Serial.println(F("Booting..."));
 
+#if defined(ARDUINO_ARCH_ESP32)
+    SPIFFS.begin(true);
+#else
     SPIFFS.begin();
+#endif
 
     wifiManager.begin();
 

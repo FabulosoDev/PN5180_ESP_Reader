@@ -5,7 +5,12 @@ Config::Config(const char* filename) : _filename(filename) {
     _password[0] = '\0';
     _channelId[0] = '\0';
     _token[0] = '\0';
+#if defined(ARDUINO_ARCH_ESP32)
+    SPIFFS.begin(true);
+#else
     SPIFFS.begin();
+#endif
+
 }
 
 bool Config::load() {

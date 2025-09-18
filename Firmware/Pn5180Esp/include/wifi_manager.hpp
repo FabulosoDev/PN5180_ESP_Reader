@@ -1,6 +1,13 @@
 #pragma once
 
-#include <ESP8266WiFi.h>
+#if defined(ARDUINO_ARCH_ESP32)
+  #include <WiFi.h>
+#elif defined(ARDUINO_ARCH_ESP8266)
+  #include <ESP8266WiFi.h>
+#else
+  #include <WiFi.h>
+#endif
+
 #include <ArduinoJson.h>
 #include "config.hpp"
 

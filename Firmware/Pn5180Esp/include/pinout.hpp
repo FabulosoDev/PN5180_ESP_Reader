@@ -6,9 +6,10 @@
     #define PIN_PN5180_RST  7
 
 #elif defined(ARDUINO_ARCH_ESP32)
-    #define PIN_PN5180_NSS  16
-    #define PIN_PN5180_BUSY 5
-    #define PIN_PN5180_RST  17
+    #define PIN_PN5180_NSS  21
+    #define PIN_PN5180_BUSY 26
+    #define PIN_PN5180_RST  22
+    #define PIN_WS2812B     15
 
 #elif defined(ARDUINO_ARCH_ESP8266)
     #define PIN_PN5180_NSS  4

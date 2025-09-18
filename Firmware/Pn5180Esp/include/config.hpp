@@ -3,8 +3,13 @@
 #ifndef CONFIG_HPP
 #define CONFIG_HPP
 
+#if defined(ARDUINO_ARCH_ESP32)
+  #include "SPIFFS.h"
+#elif defined(ARDUINO_ARCH_ESP8266)
+  #include <FS.h>
+#endif
+
 #include <Arduino.h>
-#include <FS.h>
 #include <ArduinoJson.h>
 
 class Config {
