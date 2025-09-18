@@ -1,9 +1,14 @@
+#if defined(ARDUINO_ARCH_ESP32)
+  #include "SPIFFS.h"
+#elif defined(ARDUINO_ARCH_ESP8266)
+  #include <FS.h>
+#endif
+
 #include "../include/card_storage.hpp"
-#include <FS.h>
 
 const char* CardStorage::CARDS_FILE = "/cards.json";
 
-CardStorage::CardStorage(const PN15693& pn15693) 
+CardStorage::CardStorage(const PN15693& pn15693)
     : _pn15693(pn15693) {
 }
 

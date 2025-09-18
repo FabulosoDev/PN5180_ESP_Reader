@@ -25,7 +25,11 @@ void WiFiManager::connectToWiFi(const char* ssid, const char* password) {
     Serial.print(F("Connecting to WiFi network: "));
     Serial.println(ssid);
 
+#if defined(ARDUINO_ARCH_ESP32)
+    WiFi.setHostname(DEFAULT_HOSTNAME);
+#else
     WiFi.hostname(DEFAULT_HOSTNAME);
+#endif
     WiFi.begin(ssid, password);
 
     uint8_t retries = 0;
