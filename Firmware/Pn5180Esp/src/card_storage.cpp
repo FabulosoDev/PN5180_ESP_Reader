@@ -32,24 +32,24 @@ SaveCardResult CardStorage::saveCard() const {
 
     DynamicJsonDocument doc(4096);
     JsonArray cards;
-    
+
     if (SPIFFS.exists(CARDS_FILE)) {
         File file = SPIFFS.open(CARDS_FILE, "r");
         if (!file) {
             Serial.println(F("Failed to open cards file for reading"));
             return SaveCardResult::Error;
         }
-        
+
         DeserializationError error = deserializeJson(doc, file);
         file.close();
-        
+
         if (error) {
             Serial.println(F("Failed to parse cards file"));
             return SaveCardResult::Error;
         }
-        
+
         cards = doc.as<JsonArray>();
-        
+
         for (const auto& card : cards) {
             if (card.containsKey("uid") && strcmp(card["uid"].as<const char*>(), uidString) == 0) {
                 Serial.println(F("Card already in database, skipping"));

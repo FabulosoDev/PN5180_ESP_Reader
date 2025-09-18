@@ -18,7 +18,7 @@ $(function() {
 
     function loadCardHistory() {
         const $tbody = $('#cardHistory');
-        
+
         $.ajax({
             url: '/cards.json',
             method: 'GET',
@@ -30,7 +30,7 @@ $(function() {
         })
         .done(cards => {
             $tbody.empty();
-            
+
             const rows = cards.map(card => {
                 const $actions = $('<td>').append(
                     $('<button>')
@@ -49,7 +49,7 @@ $(function() {
                     $actions
                 );
             });
-            
+
             $tbody.append(rows);
         });
     }
@@ -58,14 +58,14 @@ $(function() {
         const folderName = card.uid.slice(0, 8).toUpperCase();
         const $modal = $('#zipNameModal');
         const $confirmBtn = $('#confirmZipName');
-        
+
         $('#zipNameInput').val(folderName);
-        
+
         const modal = new bootstrap.Modal($modal);
         $modal.one('hidden.bs.modal', () => {
             $confirmBtn.off('click');
         });
-        
+
         $confirmBtn.one('click', function() {
             modal.hide();
             const zipName = $('#zipNameInput').val().trim() || folderName;
@@ -75,10 +75,10 @@ $(function() {
                 const jsonName = card.uid.slice(-8).toUpperCase();
                 const folder = zip.folder(folderName);
                 const nfc = new Nfc(card.uid, card.data);
-                
+
                 folder.file(`${jsonName}.json`, nfc.createJsonContent());
                 folder.file(`${zipName}.nfc`, nfc.createNfcContent());
-        
+
                 zip.generateAsync({type: "blob"})
                     .then(blob => {
                         const url = window.URL.createObjectURL(blob);
@@ -97,7 +97,7 @@ $(function() {
                     .catch(error => {
                         eventHandler.showMessage('danger', `Failed to download: ${error.message}`);
                     });
-    
+
             } catch (error) {
                 eventHandler.showMessage('danger', `Failed to create files: ${error.message}`);
             }
@@ -109,12 +109,12 @@ $(function() {
     function deleteCard(uid) {
         const $modal = $('#deleteConfirmModal');
         const $confirmBtn = $('#confirmDelete');
-        
+
         const modal = new bootstrap.Modal($modal);
         $modal.one('hidden.bs.modal', () => {
             $confirmBtn.off('click');
         });
-        
+
         $confirmBtn.one('click', function() {
             modal.hide();
             $.ajax({
@@ -137,7 +137,7 @@ $(function() {
                 loadCardHistory();
             });
         });
-        
+
         modal.show();
     }
     loadCardHistory();

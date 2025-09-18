@@ -16,7 +16,7 @@ public:
 private:
     Config& _config;
     String getWebhookUrl() const;
-    bool isConfigValid() const;    
+    bool isConfigValid() const;
 };
 
 #endif // DISCORD_HPP

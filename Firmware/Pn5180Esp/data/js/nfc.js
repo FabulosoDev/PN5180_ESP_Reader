@@ -20,7 +20,7 @@ export class Nfc {
             _version: 5
         };
         return JSON.stringify(json, null, 2);
-    }    
+    }
 
     createNfcContent() {
         const formattedUid = this.uid.match(/.{1,2}/g).reverse().join(' ').toUpperCase();

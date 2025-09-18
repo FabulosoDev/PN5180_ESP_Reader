@@ -16,7 +16,7 @@ class CardStorage {
 public:
     explicit CardStorage(const PN15693& pn15693);
     SaveCardResult saveCard() const;
-    
+
 private:
     static const char* CARDS_FILE;
     const PN15693& _pn15693;

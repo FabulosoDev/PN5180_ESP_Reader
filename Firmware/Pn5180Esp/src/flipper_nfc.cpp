@@ -1,12 +1,12 @@
 #include "../include/flipper_nfc.hpp"
 
-FlipperNfc::FlipperNfc(const PN15693& pn15693) 
+FlipperNfc::FlipperNfc(const PN15693& pn15693)
     : _uid(pn15693.getUid()), _data(pn15693.getData()) {
 }
 
 String FlipperNfc::bytesToHexString(const uint8_t* bytes, size_t length, bool reverse) const {
     String result;
-    
+
     if (reverse) {
         for (int i = length - 1; i >= 0; i--) {
             if (i < length - 1) result += " ";
@@ -22,14 +22,14 @@ String FlipperNfc::bytesToHexString(const uint8_t* bytes, size_t length, bool re
             result += hex;
         }
     }
-    
+
     return result;
 }
 
 String FlipperNfc::create() const {
     String formattedUid = bytesToHexString(_uid, PN15693::UID_SIZE, true);
     String formattedData = bytesToHexString(_data, PN15693::DATA_SIZE);
-    
+
     return String(F("Filetype: Flipper NFC device\n"
         "Version: 4\n"
         "# Device type can be ISO14443-3A, ISO14443-3B, ISO14443-4A, ISO14443-4B, ISO15693-3, FeliCa, NTAG/Ultralight, Mifare Classic, Mifare DESFire, SLIX, ST25TB\n"

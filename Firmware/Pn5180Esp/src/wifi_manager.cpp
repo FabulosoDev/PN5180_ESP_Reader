@@ -5,13 +5,13 @@ WiFiManager::WiFiManager(Config& config) : _config(config) {}
 void WiFiManager::begin() {
     Serial.println(F("----------------------------------"));
     Serial.println(F("Initializing WiFi..."));
-    
+
     if (!_config.load()) {
         Serial.println(F("Failed to load config, starting AP"));
         setupAccessPoint();
         return;
     }
-    
+
     if (_config.hasWifiParameters()) {
         Serial.println(F("Found stored WiFi parameters"));
         connectToWiFi(_config.getSsid(), _config.getPassword());
@@ -24,7 +24,7 @@ void WiFiManager::begin() {
 void WiFiManager::connectToWiFi(const char* ssid, const char* password) {
     Serial.print(F("Connecting to WiFi network: "));
     Serial.println(ssid);
-    
+
     WiFi.hostname(DEFAULT_HOSTNAME);
     WiFi.begin(ssid, password);
 
@@ -53,7 +53,7 @@ void WiFiManager::setupAccessPoint() {
     Serial.println(DEFAULT_HOSTNAME);
     Serial.print(F("Password: "));
     Serial.println(DEFAULT_AP_PASSWORD);
-    
+
     WiFi.softAP(DEFAULT_HOSTNAME, DEFAULT_AP_PASSWORD);
     printNetworkInfo();
 }

@@ -4,8 +4,8 @@ Discord::Discord(Config& config) : _config(config) {
 }
 
 String Discord::getWebhookUrl() const {
-    return "https://discordapp.com/api/webhooks/" + 
-           String(_config.getChannelId()) + "/" + 
+    return "https://discordapp.com/api/webhooks/" +
+           String(_config.getChannelId()) + "/" +
            String(_config.getToken());
 }
 
@@ -38,8 +38,8 @@ bool Discord::sendTextFile(const String& filename, const String& content) {
 
         if (https.begin(*client, getWebhookUrl())) {
             https.addHeader("Content-Type", "multipart/form-data; boundary=" + boundary);
-        
-            int httpCode = https.POST(body);    
+
+            int httpCode = https.POST(body);
             https.end();
 
             delete client;

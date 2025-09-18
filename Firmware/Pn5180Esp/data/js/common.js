@@ -7,7 +7,7 @@ export class EventHandler {
         if (!window.EventSource) return null;
 
         const $source = $(new EventSource('/events'));
-        
+
         $source
             .on('open', () => console.log('Events Connected'))
             .on('error', e => {

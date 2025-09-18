@@ -9,7 +9,7 @@ $(function() {
         'settings_warning': 'warning',
         'settings_error': 'danger',
         'restart': 'info'
-    };        
+    };
     eventHandler.setupEventSource(events);
 
     $.getJSON("/settings", json => {
@@ -23,7 +23,7 @@ $(function() {
         const $input = $('#inputPassword');
         const $icon = $('#togglePasswordIcon');
         const isPassword = $input.attr('type') === 'password';
-        
+
         $input.attr('type', isPassword ? 'text' : 'password');
         $icon.toggleClass('fa-eye fa-eye-slash');
     });
@@ -33,14 +33,14 @@ $(function() {
         const $input = $('#inputToken');
         const $icon = $('#toggleTokenIcon');
         const isPassword = $input.attr('type') === 'password';
-        
+
         $input.attr('type', isPassword ? 'text' : 'password');
         $icon.toggleClass('fa-eye fa-eye-slash');
     });
 
     $('#btnRestart').on('click', () => {
         const $button = $('#btnRestart').prop('disabled', true);
-        
+
         $.ajax({
             type: 'GET',
             url: '/restart'
@@ -52,7 +52,7 @@ $(function() {
         e.preventDefault();
         const $form = $(e.target);
         const $button = $('#btnSubmit').prop('disabled', true);
-        
+
         $.ajax({
             type: 'POST',
             url: '/settings',

@@ -18,13 +18,13 @@ $(function() {
         'save_success': 'success',
         'save_duplicate': 'light',
         'save_error': 'danger'
-    };        
+    };
     eventHandler.setupEventSource(events);
 
     function readCard() {
         const readButton = $('#btnRead').prop('disabled', true);
         const downloadButton = $('#btnDownload').prop('disabled', true);
-      
+
         $.getJSON('/read')
             .done(data => {
                 currentUid = '-';
@@ -59,29 +59,29 @@ $(function() {
         const folderName = currentUid.slice(0, 8).toUpperCase();
         const $modal = $('#zipNameModal');
         const $confirmBtn = $('#confirmZipName');
-        
+
         $('#zipNameInput').val(folderName);
-        
+
         const modal = new bootstrap.Modal($modal);
         $modal.one('hidden.bs.modal', () => {
             readButton.prop('disabled', false);
             downloadButton.prop('disabled', currentUid === '-');
             $confirmBtn.off('click');
         });
-        
+
         $confirmBtn.one('click', function() {
             modal.hide();
             const zipName = $('#zipNameInput').val().trim() || folderName;
-    
+
             try {
                 const zip = new JSZip();
                 const jsonName = currentUid.slice(-8).toUpperCase();
-                const folder = zip.folder(folderName);              
+                const folder = zip.folder(folderName);
                 const nfc = new Nfc(currentUid, currentData);
-          
+
                 folder.file(`${jsonName}.json`, nfc.createJsonContent());
                 folder.file(`${zipName}.nfc`, nfc.createNfcContent());
-    
+
                 zip.generateAsync({type: "blob"})
                     .then(blob => {
                         const url = window.URL.createObjectURL(blob);
@@ -100,12 +100,12 @@ $(function() {
                     .catch(error => {
                         eventHandler.showMessage('danger', `Failed to download: ${error.message}`);
                     });
-    
+
             } catch (error) {
                 eventHandler.showMessage('danger', `Failed to create files: ${error.message}`);
             }
         });
-    
+
         modal.show();
     }
 

@@ -28,7 +28,7 @@ private:
     AsyncEventSource _events;
     Config& _config;
     PN15693& _pn15693;
-    
+
     static constexpr const char* SETTINGS_PATH = "/settings";
     static constexpr const char* READ_PATH = "/read";
     static constexpr const char* DELETE_PATH = "/delete";

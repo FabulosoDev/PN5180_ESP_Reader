@@ -10,7 +10,7 @@ WebServer::WebServer(Config& config, PN15693& pn15693)
 void WebServer::begin() {
     setupRoutes();
     setupEventSource();
-    
+
 #ifdef ENABLE_CORS
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
     DefaultHeaders::Instance().addHeader("Access-Control-Expose-Headers", "Content-Disposition");
@@ -22,7 +22,7 @@ void WebServer::begin() {
 void WebServer::setupRoutes() {
     setupStaticFiles();
     setupApiEndpoints();
-    
+
     _server.onNotFound([](AsyncWebServerRequest* request) {
         request->send(404);
     });
@@ -75,7 +75,7 @@ void WebServer::handleReadCard(AsyncWebServerRequest* request) {
         const uint8_t* uid = _pn15693.getUid();
         const uint8_t* data = _pn15693.getData();
     #endif
-    
+
     if (!data || !uid) {
         Serial.println(F("Error: Invalid card data"));
         if (!data) {
@@ -90,9 +90,9 @@ void WebServer::handleReadCard(AsyncWebServerRequest* request) {
         request->send(404);
         return;
     }
-    
+
     StaticJsonDocument<500> doc;
-    
+
     char uidBuffer[(PN15693::UID_SIZE * 2) + 1];
     char* ptr = uidBuffer;
     for (uint8_t i = 0; i < PN15693::UID_SIZE; i++) {
@@ -100,7 +100,7 @@ void WebServer::handleReadCard(AsyncWebServerRequest* request) {
     }
     *ptr = '\0';
     doc["uid"] = uidBuffer;
-    
+
     char dataBuffer[(PN15693::DATA_SIZE * 2) + 1];
     ptr = dataBuffer;
     for (uint8_t i = 0; i < PN15693::DATA_SIZE; i++) {
@@ -108,10 +108,10 @@ void WebServer::handleReadCard(AsyncWebServerRequest* request) {
     }
     *ptr = '\0';
     doc["data"] = dataBuffer;
-    
+
     String response;
     serializeJson(doc, response);
-    
+
     Serial.println(F("Card data:"));
     Serial.println(response);
 
@@ -136,11 +136,11 @@ void WebServer::handleDeleteCard(AsyncWebServerRequest* request, JsonVariant& js
     }
     Serial.print(F("Deleting card with UID: "));
     Serial.println(uid);
-    
+
     DynamicJsonDocument doc(4096);
     JsonArray cards;
     bool found = false;
-    
+
     if (SPIFFS.exists("/cards.json")) {
         File file = SPIFFS.open("/cards.json", "r");
         if (!file) {
@@ -148,22 +148,22 @@ void WebServer::handleDeleteCard(AsyncWebServerRequest* request, JsonVariant& js
             request->send(500, "application/json", "{\"error\":\"Failed to open file\"}");
             return;
         }
-        
+
         DeserializationError error = deserializeJson(doc, file);
         file.close();
-        
+
         if (error) {
             Serial.print(F("Error parsing JSON: "));
             Serial.println(error.c_str());
             request->send(500, "application/json", "{\"error\":\"Failed to parse JSON\"}");
             return;
         }
-        
+
         cards = doc.as<JsonArray>();
         Serial.print(F("Found "));
         Serial.print(cards.size());
         Serial.println(F(" cards in database"));
-        
+
         for (JsonArray::iterator it = cards.begin(); it != cards.end(); ++it) {
             if ((*it)["uid"] == uid) {
                 cards.remove(it);
@@ -178,14 +178,14 @@ void WebServer::handleDeleteCard(AsyncWebServerRequest* request, JsonVariant& js
             request->send(404, "application/json", "{\"error\":\"Card not found\"}");
             return;
         }
-        
+
         file = SPIFFS.open("/cards.json", "w");
         if (!file) {
             Serial.println(F("Error: Failed to open file for writing"));
             request->send(500, "application/json", "{\"error\":\"Failed to write file\"}");
             return;
         }
-                
+
         if (serializeJson(doc, file) == 0) {
             Serial.println(F("Error: Failed to write JSON data"));
             file.close();
@@ -199,14 +199,14 @@ void WebServer::handleDeleteCard(AsyncWebServerRequest* request, JsonVariant& js
         request->send(200, "application/json", "{\"success\":true}");
         return;
     }
-    
+
     Serial.println(F("Error: cards.json does not exist"));
     request->send(500, "application/json", "{\"error\":\"Failed to open file\"}");
 }
 
 void WebServer::handleSettingsGet(AsyncWebServerRequest* request) {
     StaticJsonDocument<400> doc;
-    
+
     if (_config.hasWifiParameters()) {
         doc["ssid"] = _config.getSsid();
         doc["password"] = _config.getPassword();
@@ -222,7 +222,7 @@ void WebServer::handleSettingsGet(AsyncWebServerRequest* request) {
         doc["channel_id"] = "";
         doc["token"] = "";
     }
-    
+
     String response;
     serializeJson(doc, response);
     request->send(200, "application/json", response);
@@ -243,7 +243,7 @@ void WebServer::handleSettingsPost(AsyncWebServerRequest* request, JsonVariant& 
 
     _config.setCredentials(ssid, password);
     _config.setDiscordConfig(channelId, token);
-    
+
     if (_config.save()) {
         _events.send("Settings saved successfully.", "settings_success", millis());
         request->send(200);
@@ -266,11 +266,11 @@ void WebServer::setupEventSource() {
 
 void WebServer::handleRestart(AsyncWebServerRequest* request) {
     Serial.println(F("Handling restart request..."));
-    
+
     request->onDisconnect([]() {
         ESP.restart();
     });
-    
+
     _events.send("Restarting...", "restart", millis());
     request->send(200);
 }

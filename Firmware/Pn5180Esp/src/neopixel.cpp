@@ -1,6 +1,6 @@
 #include "../include/neopixel.hpp"
 
-NeoPixel::NeoPixel(uint8_t pin, uint8_t numPixels) 
+NeoPixel::NeoPixel(uint8_t pin, uint8_t numPixels)
     : _pixels(numPixels, pin, NEO_GRB + NEO_KHZ800) {
 }
 
