@@ -9,13 +9,15 @@
 class FlipperNfc {
 public:
     FlipperNfc(const PN15693& card);
+    FlipperNfc(const String& uidStr, const String& dataStr);
     String create() const;
     String getFilename() const;
 
 private:
-    const uint8_t* _uid;
-    const uint8_t* _data;
+    uint8_t _uid[PN15693::UID_SIZE];
+    uint8_t _data[PN15693::DATA_SIZE];
     String bytesToHexString(const uint8_t* bytes, size_t length, bool reverse = false) const;
+    void hexStringToBytes(const String& hex, uint8_t* bytes, size_t size) const;
 };
 
 #endif // FLIPPER_NFC_HPP

@@ -17,13 +17,17 @@ $(function() {
         'read_error': 'danger',
         'save_success': 'success',
         'save_duplicate': 'light',
-        'save_error': 'danger'
+        'save_error': 'danger',
+        'discord_queued': 'info',
+        'discord_success': 'success',
+        'discord_error': 'danger'
     };
     eventHandler.setupEventSource(events);
 
     function readCard() {
         const readButton = $('#btnRead').prop('disabled', true);
         const downloadButton = $('#btnDownload').prop('disabled', true);
+        const nfcDiscordButton = $('#btnNfcDiscord').prop('disabled', true);
 
         $.getJSON('/read')
             .done(data => {
@@ -36,12 +40,14 @@ $(function() {
                 $('#cardUid').text(currentUid);
                 $('#cardData').text(currentData);
                 downloadButton.prop('disabled', currentUid === '-');
+                nfcDiscordButton.prop('disabled', currentUid === '-');
             })
             .fail(() => {
                 currentUid = '-';
                 currentData = '-';
                 $('#cardUid, #cardData').text('-');
                 downloadButton.prop('disabled', true);
+                nfcDiscordButton.prop('disabled', true);
             })
             .always(() => {
                 readButton.prop('disabled', false);
@@ -83,6 +89,24 @@ $(function() {
         }
     }
 
+    function nfcDiscord() {
+        if (currentUid === '-' || currentData === '-') {
+            eventHandler.showMessage('warning', 'Please read a card first');
+            return;
+        }
+
+        const nfcDiscordButton = $('#btnNfcDiscord').prop('disabled', true);
+
+        $.ajax({
+            type: 'POST',
+            url: '/nfcdiscord'
+        })
+        .always(() => {
+            nfcDiscordButton.prop('disabled', false);
+        });
+    }
+
     $('#btnRead').on('click', readCard);
     $('#btnDownload').on('click', downloadCard).prop('disabled', true);
+    $('#btnNfcDiscord').on('click', nfcDiscord).prop('disabled', true);
 });

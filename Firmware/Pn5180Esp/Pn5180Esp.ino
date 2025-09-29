@@ -14,9 +14,9 @@ NeoPixel neopixel(PIN_WS2812B);
 
 Config config("/config.json");
 WiFiManager wifiManager(config);
-WebServer webServer(config, pn15693);
-CardStorage cardStorage(pn15693);
 Discord discord(config);
+WebServer webServer(config, pn15693, discord);
+CardStorage cardStorage(pn15693);
 
 uint8_t lastSentUid[PN15693::UID_SIZE] = {0};
 
@@ -83,6 +83,8 @@ void loop() {
             delay(2000);
         }
     }
+
+    webServer.processDiscordUpload();
 
     delay(100);
 }

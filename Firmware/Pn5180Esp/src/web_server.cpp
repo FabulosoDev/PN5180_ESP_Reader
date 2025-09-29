@@ -1,10 +1,11 @@
 #include "../include/web_server.hpp"
 
-WebServer::WebServer(Config& config, PN15693& pn15693)
+WebServer::WebServer(Config& config, PN15693& pn15693, Discord& discord)
     : _server(80)
     , _events("/events")
     , _config(config)
-    , _pn15693(pn15693) {
+    , _pn15693(pn15693)
+    , _discord(discord) {
 }
 
 void WebServer::begin() {
@@ -38,6 +39,13 @@ void WebServer::setupApiEndpoints() {
     _server.on(READ_PATH, HTTP_GET, [this](AsyncWebServerRequest* request) {
         handleReadCard(request);
     });
+
+    _server.addHandler(new AsyncCallbackJsonWebHandler(
+        NFC_DISCORD_PATH,
+        [this](AsyncWebServerRequest* request, JsonVariant& json) {
+            handleNfcDiscord(request, json);
+        }
+    ));
 
     _server.addHandler(new AsyncCallbackJsonWebHandler(
         DELETE_PATH,
@@ -120,6 +128,30 @@ void WebServer::handleReadCard(AsyncWebServerRequest* request) {
     Serial.println(response);
 
     request->send(200, "application/json", response);
+}
+
+void WebServer::handleNfcDiscord(AsyncWebServerRequest* request, JsonVariant& json) {
+    Serial.println(F("----------------------------------"));
+    Serial.println(F("Handling send .nfc to Discord request..."));
+
+    JsonObject cardData = json.as<JsonObject>();
+    const char* uidStr = cardData["uid"];
+    const char* dataStr = cardData["data"];
+
+    if (!uidStr || !dataStr) {
+        Serial.println(F("Error: Missing card data in request"));
+        _events.send("Missing card data", "discord_error", millis());
+        request->send(400, "application/json", "{\"error\":\"Missing card data\"}");
+        return;
+    }
+
+    String uid = String(uidStr);
+    String data = String(dataStr);
+
+    request->send(200, "application/json", "{\"success\":true,\"message\":\"Discord upload queued\"}");
+    _events.send("Discord upload queued", "discord_queued", millis());
+
+    scheduleDiscordUpload(uid, data);
 }
 
 void WebServer::handleDeleteCard(AsyncWebServerRequest* request, JsonVariant& json) {
@@ -307,4 +339,28 @@ void WebServer::handleRestart(AsyncWebServerRequest* request) {
 
     _events.send("Restarting...", "restart", millis());
     request->send(200);
+}
+
+void WebServer::scheduleDiscordUpload(const String& uid, const String& data) {
+    _discordTask.uid = uid;
+    _discordTask.data = data;
+    _discordTask.pending = true;
+}
+
+void WebServer::processDiscordUpload() {
+    if (!_discordTask.pending) {
+        return;
+    }
+
+    FlipperNfc flipper(_discordTask.uid, _discordTask.data);
+    String filename = flipper.getFilename() + ".nfc";
+    String content = flipper.create();
+
+    if (_discord.sendTextFile(filename, content)) {
+        _events.send("File sent to Discord successfully", "discord_success", millis());
+    } else {
+        _events.send("Failed to send file to Discord", "discord_error", millis());
+    }
+
+    _discordTask.pending = false;
 }
