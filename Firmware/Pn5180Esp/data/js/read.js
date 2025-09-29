@@ -56,57 +56,31 @@ $(function() {
 
         const readButton = $('#btnRead').prop('disabled', true);
         const downloadButton = $('#btnDownload').prop('disabled', true);
-        const folderName = currentUid.slice(0, 8).toUpperCase();
-        const $modal = $('#zipNameModal');
-        const $confirmBtn = $('#confirmZipName');
+        const nfcName = currentUid.slice(0, 8).toUpperCase();
 
-        $('#zipNameInput').val(folderName);
+        try {
+            const nfc = new Nfc(currentUid, currentData);
+            const content = nfc.createNfcContent();
+            const blob = new Blob([content], { type: 'text/plain' });
 
-        const modal = new bootstrap.Modal($modal);
-        $modal.one('hidden.bs.modal', () => {
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${nfcName}.nfc`;
+            link.style.display = 'none';
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+
+            eventHandler.showMessage('success', 'NFC file downloaded successfully');
+        } catch (error) {
+            eventHandler.showMessage('danger', `Failed to create NFC file: ${error.message}`);
+        } finally {
             readButton.prop('disabled', false);
             downloadButton.prop('disabled', currentUid === '-');
-            $confirmBtn.off('click');
-        });
-
-        $confirmBtn.one('click', function() {
-            modal.hide();
-            const zipName = $('#zipNameInput').val().trim() || folderName;
-
-            try {
-                const zip = new JSZip();
-                const jsonName = currentUid.slice(-8).toUpperCase();
-                const folder = zip.folder(folderName);
-                const nfc = new Nfc(currentUid, currentData);
-
-                folder.file(`${jsonName}.json`, nfc.createJsonContent());
-                folder.file(`${zipName}.nfc`, nfc.createNfcContent());
-
-                zip.generateAsync({type: "blob"})
-                    .then(blob => {
-                        const url = window.URL.createObjectURL(blob);
-                        const link = document.createElement('a');
-                        link.href = url;
-                        link.download = `${zipName}.zip`;
-                        link.style.display = 'none';
-
-                        document.body.appendChild(link);
-                        link.click();
-
-                        document.body.removeChild(link);
-                        window.URL.revokeObjectURL(url);
-                        eventHandler.showMessage('success', 'Zip downloaded successfully');
-                    })
-                    .catch(error => {
-                        eventHandler.showMessage('danger', `Failed to download: ${error.message}`);
-                    });
-
-            } catch (error) {
-                eventHandler.showMessage('danger', `Failed to create files: ${error.message}`);
-            }
-        });
-
-        modal.show();
+        }
     }
 
     $('#btnRead').on('click', readCard);
