@@ -12,7 +12,10 @@ $(function() {
             $.isFunction(navigator.vibrate) && navigator.vibrate([200, 100, 200]);
         },
         'save_duplicate': 'light',
-        'save_error': 'danger'
+        'save_error': 'danger',
+        'discord_queued': 'info',
+        'discord_success': 'success',
+        'discord_error': 'danger'
     };
     eventHandler.setupEventSource(events);
 
@@ -37,6 +40,10 @@ $(function() {
                         .addClass('btn btn-primary btn-sm me-2')
                         .html('<span class="fa-solid fa-download"></span>')
                         .on('click', () => downloadCard(card)),
+                    $('<button>')
+                        .addClass('btn btn-secondary btn-sm me-2')
+                        .html('<span class="fa-solid fa-comments"></span>')
+                        .on('click', () => nfcDiscord(card)),
                     $('<button>')
                         .addClass('btn btn-danger btn-sm')
                         .html('<span class="fa-solid fa-trash"></span>')
@@ -77,6 +84,15 @@ $(function() {
         } catch (error) {
             eventHandler.showMessage('danger', `Failed to create NFC file: ${error.message}`);
         }
+    }
+
+    function nfcDiscord(card) {
+        $.ajax({
+            url: '/nfcdiscord',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ uid: card.uid, data: card.data })
+        });
     }
 
     function deleteCard(uid) {

@@ -1,7 +1,13 @@
 #include "../include/flipper_nfc.hpp"
 
-FlipperNfc::FlipperNfc(const PN15693& pn15693)
-    : _uid(pn15693.getUid()), _data(pn15693.getData()) {
+FlipperNfc::FlipperNfc(const PN15693& pn15693) {
+    memcpy(_uid, pn15693.getUid(), PN15693::UID_SIZE);
+    memcpy(_data, pn15693.getData(), PN15693::DATA_SIZE);
+}
+
+FlipperNfc::FlipperNfc(const String& uidStr, const String& dataStr) {
+    hexStringToBytes(uidStr, _uid, PN15693::UID_SIZE);
+    hexStringToBytes(dataStr, _data, PN15693::DATA_SIZE);
 }
 
 String FlipperNfc::bytesToHexString(const uint8_t* bytes, size_t length, bool reverse) const {
@@ -24,6 +30,12 @@ String FlipperNfc::bytesToHexString(const uint8_t* bytes, size_t length, bool re
     }
 
     return result;
+}
+
+void FlipperNfc::hexStringToBytes(const String& hex, uint8_t* bytes, size_t size) const {
+    for (size_t i = 0; i < size; i++) {
+        sscanf(hex.c_str() + i * 2, "%2hhx", &bytes[i]);
+    }
 }
 
 String FlipperNfc::create() const {
