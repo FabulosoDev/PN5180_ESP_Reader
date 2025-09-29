@@ -44,7 +44,7 @@ $(function() {
                 );
 
                 return $('<tr>').append(
-                    $('<td>').text(card.uid),
+                    $('<td>').text(card.uid.slice(0, 8) + '...'),
                     $('<td>').text(card.data.slice(0, 6) + '...'),
                     $actions
                 );

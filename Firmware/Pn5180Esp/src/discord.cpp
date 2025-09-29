@@ -23,8 +23,7 @@ bool Discord::sendTextFile(const String& filename, const String& content) {
 
     WiFiClientSecure *client = new WiFiClientSecure;
 
-    if (client)
-    {
+    if (client) {
         client->setInsecure();
         HTTPClient https;
 
@@ -56,7 +55,8 @@ bool Discord::sendTextFile(const String& filename, const String& content) {
         }
     }
 
-    Serial.println("Failed to send file to Discord");
+    Serial.println("Failed to initialize HTTPS connection");
+    delete client;
 
     return false;
 }
