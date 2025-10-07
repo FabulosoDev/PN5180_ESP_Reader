@@ -1,13 +1,13 @@
-#include "include/config.hpp"
-#include "include/globals.hpp"
-#include "include/pinout.hpp"
-#include "include/pn15693.hpp"
-#include "include/neopixel.hpp"
-#include "include/web_server.hpp"
-#include "include/wifi_manager.hpp"
-#include "include/card_storage.hpp"
-#include "include/discord.hpp"
-#include "include/flipper_nfc.hpp"
+#include "../include/config.hpp"
+#include "../include/globals.hpp"
+#include "../include/pinout.hpp"
+#include "../include/pn15693.hpp"
+#include "../include/neopixel.hpp"
+#include "../include/web_server.hpp"
+#include "../include/wifi_manager.hpp"
+#include "../include/card_storage.hpp"
+#include "../include/discord.hpp"
+#include "../include/flipper_nfc.hpp"
 
 PN15693 pn15693(PIN_PN5180_NSS, PIN_PN5180_BUSY, PIN_PN5180_RST);
 NeoPixel neopixel(PIN_WS2812B);
